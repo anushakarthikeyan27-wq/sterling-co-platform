@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Sterling & Co</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body id="dashRoot">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">S</span>terling &amp; Co</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="browse.html">Find a Professional</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-ghost btn-sm" href="login.html">Sign out</a>
+    </div>
+  </div>
+</nav>
+
+<div class="dash-shell">
+  <div class="dash-side">
+    <a href="#" id="nav-overview" class="active" onclick="switchTab('overview'); return false;">Overview</a>
+    <a href="#" id="nav-projects" onclick="switchTab('projects'); return false;">Projects &amp; Quotes</a>
+    <a href="#" id="nav-messages" onclick="switchTab('messages'); return false;">Messages</a>
+    <a href="#" id="nav-notifications" onclick="switchTab('notifications'); return false;">Notifications</a>
+    <a href="#" id="nav-account" onclick="switchTab('account'); return false;">Account Settings</a>
+  </div>
+
+  <div class="dash-main">
+
+    <div class="tab-panel active" id="tab-overview">
+      <div class="dash-head"><h2>Welcome back, Elena.</h2></div>
+      <div class="grid grid-3" style="margin-bottom:40px;">
+        <div class="card" style="padding:24px;"><p style="font-size:12.5px;color:var(--ivory-faint);margin-bottom:8px;">Active projects</p><h3>3</h3></div>
+        <div class="card" style="padding:24px;"><p style="font-size:12.5px;color:var(--ivory-faint);margin-bottom:8px;">Unread messages</p><h3>1</h3></div>
+        <div class="card" style="padding:24px;"><p style="font-size:12.5px;color:var(--ivory-faint);margin-bottom:8px;">Average rating</p><h3>4.9 ★</h3></div>
+      </div>
+      <h3 style="margin-bottom:18px;">Recent activity</h3>
+      <div id="notifList" style="max-width:640px;"></div>
+    </div>
+
+    <div class="tab-panel" id="tab-projects">
+      <div class="dash-head">
+        <h2>Projects &amp; Quotes</h2>
+        <button class="btn btn-solid btn-sm" onclick="mockSubmit(event, 'New project request form opened.')">New Request</button>
+      </div>
+      <div id="projectList"></div>
+    </div>
+
+    <div class="tab-panel" id="tab-messages">
+      <div class="dash-head"><h2>Messages</h2></div>
+      <div class="msg-shell">
+        <div class="thread-list" id="threadList"></div>
+        <div class="chat-col">
+          <div class="chat-head">
+            <div>
+              <div style="font-family:var(--font-display);font-size:16px;" id="chatName">—</div>
+              <div style="font-size:12px;color:var(--ivory-faint);" id="chatStatus">—</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="mockSubmit(event, 'Opening file attachment picker.')">Attach file</button>
+          </div>
+          <div class="chat-body" id="chatBody"></div>
+          <form class="chat-input" onsubmit="sendMessage(event)">
+            <input type="text" id="chatInput" placeholder="Write a message…">
+            <button class="btn btn-solid btn-sm" type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-notifications">
+      <div class="dash-head"><h2>Notifications</h2></div>
+      <div id="notifList2"></div>
+      <script>document.getElementById('notifList2') && (document.getElementById('notifList2').id = 'notifList2');</script>
+    </div>
+
+    <div class="tab-panel" id="tab-account">
+      <div class="dash-head"><h2>Account Settings</h2></div>
+      <div style="max-width:480px;">
+        <div class="field"><label>Full name</label><input type="text" value="Elena Vasquez"></div>
+        <div class="field"><label>Email</label><input type="email" value="elena.vasquez@example.com"></div>
+        <div class="field"><label>Location</label><input type="text" value="Chennai, IN"></div>
+        <div class="field"><label>New password</label><input type="password" placeholder="Leave blank to keep current password"></div>
+        <button class="btn btn-solid" onclick="mockSubmit(event, 'Account settings saved.')">Save changes</button>
+        <button class="btn btn-ghost" style="margin-top:12px;border-color:var(--burgundy);color:#c98a8a;" onclick="mockSubmit(event, 'Account deletion requested.')">Delete account</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // Overview tab and dedicated Notifications tab both show the same feed
+  document.addEventListener('DOMContentLoaded', () => {
+    const list = document.getElementById('notifList2');
+    if(list){
+      list.innerHTML = NOTIFICATIONS.map(n => `
+        <div class="notif-row">
+          <div class="notif-dot ${n.read ? 'read' : ''}"></div>
+          <div><p>${n.text}</p><span>${n.time}</span></div>
+        </div>`).join('');
+    }
+  });
+</script>
+</body>
+</html>

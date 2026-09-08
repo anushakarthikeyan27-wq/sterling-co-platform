@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — Sterling & Co</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="blueprint" style="min-height:100vh;">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">S</span>terling &amp; Co</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="browse.html">Find a Professional</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+    <div class="nav-actions"></div>
+  </div>
+</nav>
+
+<div class="form-shell">
+  <div class="form-tabs">
+    <div class="form-tab active" id="tab-login-btn" onclick="setFormTab('login', this)">Sign in</div>
+    <div class="form-tab" id="tab-signup-btn" onclick="setFormTab('signup', this)">Create account</div>
+  </div>
+
+  <div id="panel-login">
+    <form onsubmit="handleLogin(event)">
+      <div class="field">
+        <label for="li-email">Email</label>
+        <input type="email" id="li-email" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label for="li-pass">Password</label>
+        <input type="password" id="li-pass" placeholder="••••••••" required>
+      </div>
+      <div style="text-align:right;margin-bottom:22px;">
+        <a href="#" onclick="mockSubmit(event, 'Password reset link sent.')" style="font-size:12.5px;color:var(--brass-light);">Forgot password?</a>
+      </div>
+      <button class="btn btn-solid btn-full" type="submit">Sign in</button>
+    </form>
+    <p class="form-foot">New to Sterling & Co? <a href="#" onclick="setFormTab('signup', document.getElementById('tab-signup-btn')); return false;">Create an account</a></p>
+  </div>
+
+  <div id="panel-signup" style="display:none;">
+    <div class="role-toggle">
+      <button type="button" class="active" onclick="setRole('client', this)">I'm a Client</button>
+      <button type="button" onclick="setRole('professional', this)">I'm a Professional</button>
+    </div>
+    <form onsubmit="handleSignup(event)">
+      <div class="field">
+        <label for="su-name">Full name</label>
+        <input type="text" id="su-name" placeholder="Your name" required>
+      </div>
+      <div class="field">
+        <label for="su-email">Email</label>
+        <input type="email" id="su-email" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label for="su-pass">Password</label>
+        <input type="password" id="su-pass" placeholder="At least 8 characters" required>
+      </div>
+      <div class="field">
+        <label for="su-loc">Location</label>
+        <input type="text" id="su-loc" placeholder="City, State">
+      </div>
+      <button class="btn btn-solid btn-full" type="submit">Create account</button>
+    </form>
+    <p class="form-foot">Already registered? <a href="#" onclick="setFormTab('login', document.getElementById('tab-login-btn')); return false;">Sign in</a></p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

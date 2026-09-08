@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Profile — Sterling & Co</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body id="profileRoot">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">S</span>terling &amp; Co</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="browse.html" class="active">Find a Professional</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-ghost btn-sm" href="login.html">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<div class="profile-header">
+  <div class="wrap profile-top">
+    <div class="avatar" id="proInitial">EV</div>
+    <div class="profile-id">
+      <h1 id="proName">Elena Vasquez</h1>
+      <div class="role" id="proRole">Structural Engineer · Structural</div>
+      <div class="meta" id="proMeta">Chennai, IN · 12 years experience · Open for work</div>
+    </div>
+    <div class="profile-actions">
+      <button class="btn btn-ghost" onclick="mockSubmit(event, 'Saved to your bookmarks.')">Save</button>
+      <button class="btn btn-ghost" onclick="mockSubmit(event, 'Opening a message thread…')">Message</button>
+      <button class="btn btn-solid" onclick="mockSubmit(event, 'Quote request sent.')">Request a Quote</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap profile-body">
+  <div>
+    <div class="about-block">
+      <h3>About</h3>
+      <p id="proBio" style="margin-top:14px;max-width:640px;"></p>
+    </div>
+
+    <div class="about-block">
+      <h3>Certifications</h3>
+      <div style="margin-top:14px;">
+        <div class="credential"><span>Chartered Structural Engineer, Institution of Engineers (India)</span><span class="badge">Verified</span></div>
+        <div class="credential"><span>Certified Seismic Retrofit Specialist</span><span class="badge">Verified</span></div>
+      </div>
+    </div>
+
+    <div class="about-block">
+      <h3>Portfolio</h3>
+      <div class="portfolio-grid" id="portfolioGrid"></div>
+    </div>
+
+    <div class="about-block">
+      <h3>Client reviews</h3>
+      <div id="reviewList" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <div class="side-panel">
+    <div class="k">Rate</div>
+    <div class="v" id="proRate">—</div>
+    <div class="k">Rating</div>
+    <div class="v" id="proRating" style="font-size:14px;">—</div>
+    <hr class="rule" style="margin:18px 0;">
+    <div class="k">Contact</div>
+    <div class="v" style="font-size:14px;color:var(--ivory-faint);">Hidden until a project is accepted</div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap footer-row">
+    <p>© 2026 Sterling & Co. A prototype front-end — no data leaves your browser.</p>
+    <p>Chennai · Bengaluru · Kochi · Hyderabad</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

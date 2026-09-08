@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anusha K — Full-Stack Developer</title>
+<meta name="description" content="Anusha K — Full-Stack Web Developer & B.Tech IT Student. Building intelligent, human-centered web applications.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ===== NAV ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-mark">A·K</a>
+    <nav class="nav-links">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <p class="eyebrow reveal">Portfolio — Est. 2026</p>
+    <h1 class="hero-title">
+      <span class="reveal" style="--d:0.05s">Anusha</span>
+      <span class="reveal" style="--d:0.15s">Karthikeyan</span>
+    </h1>
+    <p class="hero-role reveal" style="--d:0.3s">Full-Stack Web Developer <span class="dot">•</span> B.Tech IT, 3rd Year</p>
+    <p class="hero-sub reveal" style="--d:0.4s">I build web applications that solve real problems — from intelligent detection systems to clean, usable interfaces. Currently sharpening my craft one project at a time.</p>
+    <div class="hero-cta reveal" style="--d:0.5s">
+      <a href="#work" class="btn btn-primary">View My Work</a>
+      <a href="#contact" class="btn btn-ghost">Get In Touch</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="section" id="about">
+  <div class="section-inner about-grid">
+    <div class="about-photo reveal-up">
+      <div class="photo-frame">
+        <img src="assets/profile.jpg" alt="Anusha K" id="profileImg" onerror="this.style.display='none'; document.getElementById('photoFallback').style.display='flex';">
+        <div class="photo-fallback" id="photoFallback">AK</div>
+      </div>
+      <div class="photo-caption">Chennai, India</div>
+    </div>
+    <div class="about-text">
+      <p class="eyebrow reveal-up">01 — About</p>
+      <h2 class="section-title reveal-up">Hello, I'm Anusha.</h2>
+      <p class="about-body reveal-up">
+        I'm a third-year B.Tech Information Technology student at <strong>Misrimal Navajee Munoth Jain Engineering College</strong>,
+        with a growing focus on full-stack web development. I like building things that are both functional and thoughtfully designed —
+        applications where good engineering and good user experience aren't separate goals.
+      </p>
+      <p class="about-body reveal-up">
+        My work leans into problems where technology can make a tangible difference — like using image processing to make food safety
+        checks more accessible. Outside of coursework, I'm constantly picking up new tools across the stack and turning ideas into
+        working products.
+      </p>
+      <div class="about-facts reveal-up">
+        <div class="fact">
+          <span class="fact-label">Focus</span>
+          <span class="fact-value">Full-Stack Development</span>
+        </div>
+        <div class="fact">
+          <span class="fact-label">Studying</span>
+          <span class="fact-value">B.Tech, Information Technology</span>
+        </div>
+        <div class="fact">
+          <span class="fact-label">Currently</span>
+          <span class="fact-value">Open to internships & collaborations</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WORK ===== -->
+<section class="section section-alt" id="work">
+  <div class="section-inner">
+    <p class="eyebrow reveal-up">02 — Selected Work</p>
+    <h2 class="section-title reveal-up">Things I've built.</h2>
+
+    <div class="projects">
+      <article class="project reveal-up">
+        <div class="project-index">01</div>
+        <div class="project-body">
+          <h3 class="project-title">AI Food Safety Detector</h3>
+          <p class="project-desc">
+            An intelligent food inspection system built using Digital Image Processing to detect worms, contamination, and other
+            harmful anomalies in food items. The system analyzes captured images to flag safety concerns automatically — designed
+            with everyday accessibility and public health in mind.
+          </p>
+          <ul class="project-tags">
+            <li>Python</li>
+            <li>Digital Image Processing</li>
+            <li>OpenCV</li>
+            <li>Machine Learning</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project reveal-up project-placeholder">
+        <div class="project-index">02</div>
+        <div class="project-body">
+          <h3 class="project-title">Your Next Project Goes Here</h3>
+          <p class="project-desc">
+            Reserved for a solid full-stack build — a MERN app, a REST API with auth, or a dashboard with real data.
+            Replace this card with your project title, description, and tech stack once it's ready.
+          </p>
+          <ul class="project-tags">
+            <li>Add tech stack</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project reveal-up project-placeholder">
+        <div class="project-index">03</div>
+        <div class="project-body">
+          <h3 class="project-title">Your Next Project Goes Here</h3>
+          <p class="project-desc">
+            A second open slot — even a well-built weekend project (auth flow, small e-commerce cart, weather dashboard with an API)
+            reads stronger than an empty portfolio. Swap this in whenever it's ready.
+          </p>
+          <ul class="project-tags">
+            <li>Add tech stack</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SKILLS ===== -->
+<section class="section" id="skills">
+  <div class="section-inner">
+    <p class="eyebrow reveal-up">03 — Toolkit</p>
+    <h2 class="section-title reveal-up">What I work with.</h2>
+
+    <div class="skills-grid">
+      <div class="skill-group reveal-up">
+        <h4>Frontend</h4>
+        <p>HTML5, CSS3, JavaScript, React</p>
+      </div>
+      <div class="skill-group reveal-up">
+        <h4>Backend</h4>
+        <p>Node.js, Express, REST APIs</p>
+      </div>
+      <div class="skill-group reveal-up">
+        <h4>Database</h4>
+        <p>MongoDB, MySQL</p>
+      </div>
+      <div class="skill-group reveal-up">
+        <h4>AI / DIP</h4>
+        <p>Python, OpenCV, Image Processing</p>
+      </div>
+      <div class="skill-group reveal-up">
+        <h4>Tools</h4>
+        <p>Git, GitHub, VS Code</p>
+      </div>
+      <div class="skill-group reveal-up">
+        <h4>Currently Learning</h4>
+        <p>Full-Stack Architecture, Cloud Deployment</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="section section-contact" id="contact">
+  <div class="section-inner">
+    <p class="eyebrow reveal-up">04 — Get In Touch</p>
+    <h2 class="section-title reveal-up">Let's build something.</h2>
+    <p class="contact-sub reveal-up">
+      I'm always open to internships, collaborations, or a good conversation about web development. Reach out — I'd love to hear from you.
+    </p>
+    <div class="contact-links reveal-up">
+      <a href="mailto:anushakarthikeyan27@gmail.com" class="contact-link">
+        <span class="contact-label">Email</span>
+        <span class="contact-value">anushakarthikeyan27@gmail.com</span>
+      </a>
+      <a href="https://in.linkedin.com/in/anusha-karthikeyan-b1355b329" target="_blank" rel="noopener" class="contact-link">
+        <span class="contact-label">LinkedIn</span>
+        <span class="contact-value">anusha-karthikeyan</span>
+      </a>
+      <a href="https://github.com/anushakarthikeyan27-wq" target="_blank" rel="noopener" class="contact-link">
+        <span class="contact-label">GitHub</span>
+        <span class="contact-value">anushakarthikeyan27</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>&copy; 2026 Anusha K. Designed & built with care.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
