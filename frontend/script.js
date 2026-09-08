@@ -1,5 +1,5 @@
 // ---------- Connects to your real backend ----------
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://sterling-co-platform.onrender.com/api';
 
 // Dashboard-only mock data (messaging/projects/notifications stay mock for now —
 // those need login/auth wired up, which is a good next step after today).
