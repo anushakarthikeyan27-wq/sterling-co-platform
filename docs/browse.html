@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find a Professional — Sterling & Co</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">S</span>terling &amp; Co</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="browse.html" class="active">Find a Professional</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-ghost btn-sm" href="login.html">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" style="padding-top:48px;">
+  <div class="section-head">
+    <p class="eyebrow">The register</p>
+    <h2>Find a professional for your project.</h2>
+  </div>
+
+  <div class="filters">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search by name, role, or specialty…">
+    </div>
+    <select id="catFilter">
+      <option value="all">All specialties</option>
+      <option value="Structural">Structural</option>
+      <option value="Architecture">Architecture</option>
+      <option value="Interior">Interior</option>
+      <option value="Electrical">Electrical</option>
+      <option value="Civil">Civil</option>
+    </select>
+    <select id="availFilter">
+      <option value="all">Any availability</option>
+      <option value="open">Open for work</option>
+    </select>
+    <select id="sortFilter">
+      <option value="relevant">Most relevant</option>
+      <option value="rating">Highest rated</option>
+      <option value="reviews">Most reviewed</option>
+      <option value="experience">Most experienced</option>
+    </select>
+  </div>
+
+  <p style="color:var(--ivory-faint);font-size:13px;margin-bottom:24px;"><span id="resultCount">6</span> professionals found</p>
+
+  <div class="grid grid-3" id="proGrid" style="margin-bottom:80px;"></div>
+</div>
+
+<footer>
+  <div class="wrap footer-row">
+    <p>© 2026 Sterling & Co. A prototype front-end — no data leaves your browser.</p>
+    <p>Chennai · Bengaluru · Kochi · Hyderabad</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
