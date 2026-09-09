@@ -130,6 +130,7 @@ async function initBrowse(){
 
 // ---------- Profile page ----------
 let currentProfessionalId = null;
+let currentProfessionalUserId = null;
 
 async function initProfile(){
   const container = document.getElementById('profileRoot');
@@ -143,6 +144,7 @@ async function initProfile(){
     const res = await fetch(`${API_BASE}/professionals/${id}`);
     if(!res.ok) throw new Error('Not found');
     const raw = await res.json();
+    currentProfessionalUserId = raw.user?._id;
     const p = mapProfessional(raw);
 
     document.getElementById('proInitial').textContent = p.name.split(' ').map(w=>w[0]).join('');
@@ -179,6 +181,30 @@ async function initProfile(){
     }
   } catch (err) {
     console.error('Could not load this profile:', err);
+  }
+}
+
+// Real "Message" button — starts (or reuses) a real conversation, then jumps to the dashboard
+async function messageProfessional(){
+  const auth = getAuth();
+  if(!auth){
+    alert('Please sign in first to send a message.');
+    window.location.href = 'login.html';
+    return;
+  }
+  if(!currentProfessionalUserId){
+    alert('Could not identify this professional. Please refresh and try again.');
+    return;
+  }
+  try {
+    await fetch(`${API_BASE}/messages/threads`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ recipientId: currentProfessionalUserId })
+    });
+    window.location.href = 'dashboard.html?tab=messages';
+  } catch (err) {
+    alert('Could not start conversation: ' + err.message);
   }
 }
 
@@ -380,6 +406,11 @@ function initDashboard(){
   renderProjects();
   renderThreads();
   renderNotifications();
+
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('tab') === 'messages'){
+    switchTab('messages');
+  }
 }
 
 function logout(){
