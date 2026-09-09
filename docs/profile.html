@@ -17,7 +17,7 @@
       <a href="dashboard.html">Dashboard</a>
     </div>
     <div class="nav-actions">
-      <a class="btn btn-ghost btn-sm" href="login.html">Sign in</a>
+      <a class="btn btn-ghost btn-sm" href="login.html" data-auth-action>Sign in</a>
     </div>
   </div>
 </nav>
@@ -31,9 +31,9 @@
       <div class="meta" id="proMeta">Chennai, IN · 12 years experience · Open for work</div>
     </div>
     <div class="profile-actions">
-      <button class="btn btn-ghost" onclick="mockSubmit(event, 'Saved to your bookmarks.')">Save</button>
-      <button class="btn btn-ghost" onclick="mockSubmit(event, 'Opening a message thread…')">Message</button>
-      <button class="btn btn-solid" onclick="mockSubmit(event, 'Quote request sent.')">Request a Quote</button>
+      <button class="btn btn-ghost" onclick="alert('Saving to bookmarks isn\'t wired up yet — a good next feature to add.')">Save</button>
+      <button class="btn btn-ghost" onclick="alert('Go to your Dashboard \u2192 Messages to start a conversation once you have a project together.')">Message</button>
+      <button class="btn btn-solid" onclick="requestQuote()">Request a Quote</button>
     </div>
   </div>
 </div>

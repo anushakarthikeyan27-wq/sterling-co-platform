@@ -1,41 +1,23 @@
 // ---------- Connects to your real backend ----------
 const API_BASE = 'https://sterling-co-platform.onrender.com/api';
 
-// Dashboard-only mock data (messaging/projects/notifications stay mock for now —
-// those need login/auth wired up, which is a good next step after today).
-const PROJECTS = [
-  { id:101, title:"Structural audit — 3BHK independent house", client:"Deepak Nair", status:"pending", budget:"₹35,000", timeline:"2 weeks", date:"2 Sep 2026" },
-  { id:102, title:"Seismic retrofit consultation", client:"Meera Krishnan", status:"progress", budget:"₹1,20,000", timeline:"6 weeks", date:"14 Aug 2026" },
-  { id:103, title:"Foundation review, hillside plot", client:"Ashwin Rao", status:"accepted", budget:"₹28,000", timeline:"10 days", date:"28 Aug 2026" },
-  { id:104, title:"Load calculation, additional floor", client:"Priyanka Shah", status:"completed", budget:"₹18,500", timeline:"1 week", date:"3 Jul 2026" },
-  { id:105, title:"Site inspection — commercial unit", client:"Farhan Ali", status:"cancelled", budget:"₹22,000", timeline:"5 days", date:"19 Jun 2026" }
-];
-
-const THREADS = [
-  { id:1, name:"Deepak Nair", online:true, unread:true, preview:"Could you share the audit checklist before Monday?",
-    messages:[
-      {from:"them", text:"Hi Elena, thanks for taking this on.", time:"10:02 AM"},
-      {from:"me", text:"Happy to help — I'll need the original structural drawings if you have them.", time:"10:05 AM"},
-      {from:"them", text:"Could you share the audit checklist before Monday?", time:"9:41 AM"}
-    ]},
-  { id:2, name:"Meera Krishnan", online:false, unread:false, preview:"Sounds good, see you on site Thursday.",
-    messages:[
-      {from:"me", text:"I can visit site Thursday morning to inspect the east wall.", time:"Yesterday"},
-      {from:"them", text:"Sounds good, see you on site Thursday.", time:"Yesterday"}
-    ]},
-  { id:3, name:"Ashwin Rao", online:false, unread:false, preview:"Quote received — reviewing with my contractor.",
-    messages:[
-      {from:"them", text:"Quote received — reviewing with my contractor.", time:"Mon"}
-    ]}
-];
-
-const NOTIFICATIONS = [
-  { text:"Deepak Nair sent you a new message.", time:"12 minutes ago", read:false },
-  { text:"New project request: \"Structural audit — 3BHK independent house\".", time:"1 hour ago", read:false },
-  { text:"Ashwin Rao accepted your quote.", time:"Yesterday, 6:14 PM", read:true },
-  { text:"Meera Krishnan left you a 5-star review.", time:"3 days ago", read:true },
-  { text:"Your profile was viewed 14 times this week.", time:"5 days ago", read:true }
-];
+// ---------- Auth helpers (uses localStorage — normal for a real deployed site) ----------
+function getAuth(){
+  try {
+    const raw = localStorage.getItem('sterling_auth');
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+function setAuth(token, user){
+  localStorage.setItem('sterling_auth', JSON.stringify({ token, user }));
+}
+function clearAuth(){
+  localStorage.removeItem('sterling_auth');
+}
+function authHeaders(){
+  const auth = getAuth();
+  return auth ? { 'Authorization': `Bearer ${auth.token}` } : {};
+}
 
 // ---------- Helpers ----------
 function starString(rating){
@@ -43,8 +25,6 @@ function starString(rating){
   return "★".repeat(full) + "☆".repeat(5-full);
 }
 
-// Converts a professional document from the backend into the shape
-// our card/profile rendering functions expect.
 function mapProfessional(p){
   return {
     id: p._id,
@@ -91,7 +71,6 @@ function renderCards(containerId, list){
   el.innerHTML = list.map(proCardHTML).join('');
 }
 
-// ---------- Fetch real professionals from the backend ----------
 async function fetchProfessionals(){
   try {
     const res = await fetch(`${API_BASE}/professionals`);
@@ -150,12 +129,15 @@ async function initBrowse(){
 }
 
 // ---------- Profile page ----------
+let currentProfessionalId = null;
+
 async function initProfile(){
   const container = document.getElementById('profileRoot');
   if(!container) return;
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   if(!id) return;
+  currentProfessionalId = id;
 
   try {
     const res = await fetch(`${API_BASE}/professionals/${id}`);
@@ -183,7 +165,6 @@ async function initProfile(){
         </div>
       </div>`).join('');
 
-    // Real reviews from the backend
     const reviewRes = await fetch(`${API_BASE}/reviews/professional/${id}`);
     const reviews = reviewRes.ok ? await reviewRes.json() : [];
     const reviewList = document.getElementById('reviewList');
@@ -201,7 +182,39 @@ async function initProfile(){
   }
 }
 
-// ---------- Dashboard: tabs, projects, messages, notifications (still mock) ----------
+// Real "Request a Quote" — creates an actual project request via the API
+async function requestQuote(){
+  const auth = getAuth();
+  if(!auth){
+    alert('Please sign in as a client first to request a quote.');
+    window.location.href = 'login.html';
+    return;
+  }
+  if(auth.user.role !== 'client'){
+    alert('Only client accounts can request a quote. Sign in as a client to continue.');
+    return;
+  }
+  const title = prompt('Briefly describe the project (e.g. "Structural audit for 3BHK house"):');
+  if(!title) return;
+  const description = prompt('Add a few more details about the project:') || '';
+  const budget = prompt('Approximate budget (e.g. ₹35,000):') || '';
+  const timeline = prompt('Expected timeline (e.g. 2 weeks):') || '';
+
+  try {
+    const res = await fetch(`${API_BASE}/projects`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ professionalId: currentProfessionalId, title, description, budget, timeline })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Could not submit request');
+    alert('Your project request has been sent!');
+  } catch (err) {
+    alert('Something went wrong: ' + err.message);
+  }
+}
+
+// ---------- Dashboard: tabs ----------
 function switchTab(tabName){
   document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.dash-side a').forEach(el => el.classList.remove('active'));
@@ -210,82 +223,171 @@ function switchTab(tabName){
 }
 
 function statusClass(status){
-  return { pending:'status-pending', accepted:'status-accepted', progress:'status-progress', completed:'status-completed', cancelled:'status-cancelled' }[status];
+  return { pending:'status-pending', accepted:'status-accepted', in_progress:'status-progress', completed:'status-completed', cancelled:'status-cancelled' }[status] || 'status-pending';
 }
 function statusLabel(status){
-  return { pending:'Pending', accepted:'Accepted', progress:'In Progress', completed:'Completed', cancelled:'Cancelled' }[status];
+  return { pending:'Pending', accepted:'Accepted', in_progress:'In Progress', completed:'Completed', cancelled:'Cancelled' }[status] || status;
 }
 
-function renderProjects(){
+// ---------- Real projects ----------
+async function renderProjects(){
   const el = document.getElementById('projectList');
   if(!el) return;
-  el.innerHTML = PROJECTS.map(p => `
-    <div class="list-row">
-      <div>
-        <div class="title">${p.title}</div>
-        <div class="sub">Client: ${p.client} · Budget ${p.budget} · Timeline ${p.timeline} · Requested ${p.date}</div>
-      </div>
-      <div class="list-row-actions">
-        <span class="status-pill ${statusClass(p.status)}">${statusLabel(p.status)}</span>
-      </div>
-    </div>`).join('');
+  el.innerHTML = `<p style="color:var(--ivory-faint);">Loading your projects…</p>`;
+  try {
+    const res = await fetch(`${API_BASE}/projects/mine`, { headers: authHeaders() });
+    const projects = await res.json();
+    if(!res.ok) throw new Error(projects.error || 'Could not load projects');
+
+    if(projects.length === 0){
+      el.innerHTML = `<p style="color:var(--ivory-faint);">No projects yet.</p>`;
+      return;
+    }
+
+    const auth = getAuth();
+    el.innerHTML = projects.map(p => {
+      const otherParty = auth.user.role === 'client'
+        ? (p.professional?.user?.name || 'Professional')
+        : (p.client?.name || 'Client');
+      return `
+      <div class="list-row">
+        <div>
+          <div class="title">${p.title}</div>
+          <div class="sub">${auth.user.role === 'client' ? 'Professional' : 'Client'}: ${otherParty} · Budget ${p.budget || 'Not set'} · Timeline ${p.timeline || 'Not set'} · Requested ${new Date(p.createdAt).toLocaleDateString()}</div>
+        </div>
+        <div class="list-row-actions">
+          <span class="status-pill ${statusClass(p.status)}">${statusLabel(p.status)}</span>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    el.innerHTML = `<p style="color:var(--ivory-faint);">Could not load projects: ${err.message}</p>`;
+  }
 }
 
-let activeThreadId = 1;
-function renderThreads(){
+// ---------- Real messaging ----------
+let activeThreadId = null;
+let threadCache = [];
+
+async function renderThreads(){
   const el = document.getElementById('threadList');
   if(!el) return;
-  el.innerHTML = THREADS.map(t => `
-    <div class="thread-item ${t.id === activeThreadId ? 'active' : ''}" onclick="openThread(${t.id})">
-      <div class="name">${t.unread ? '<span class="dot"></span>' : ''}${t.name}</div>
-      <div class="preview">${t.preview}</div>
-    </div>`).join('');
+  try {
+    const res = await fetch(`${API_BASE}/messages/threads`, { headers: authHeaders() });
+    const threads = await res.json();
+    if(!res.ok) throw new Error(threads.error || 'Could not load messages');
+    threadCache = threads;
+
+    if(threads.length === 0){
+      el.innerHTML = `<p style="padding:20px;color:var(--ivory-faint);font-size:13px;">No conversations yet.</p>`;
+      return;
+    }
+
+    const auth = getAuth();
+    el.innerHTML = threads.map(t => {
+      const other = t.participants.find(p => p._id !== auth.user.id) || t.participants[0];
+      return `
+      <div class="thread-item ${t._id === activeThreadId ? 'active' : ''}" onclick="openThread('${t._id}')">
+        <div class="name">${other?.name || 'Conversation'}</div>
+        <div class="preview">${t.lastMessage || 'No messages yet'}</div>
+      </div>`;
+    }).join('');
+
+    if(!activeThreadId && threads.length > 0){
+      openThread(threads[0]._id);
+    }
+  } catch (err) {
+    el.innerHTML = `<p style="padding:20px;color:var(--ivory-faint);font-size:13px;">Could not load messages: ${err.message}</p>`;
+  }
 }
 
-function openThread(id){
+async function openThread(id){
   activeThreadId = id;
-  const t = THREADS.find(x => x.id === id);
-  t.unread = false;
   renderThreads();
-  document.getElementById('chatName').textContent = t.name;
-  document.getElementById('chatStatus').textContent = t.online ? 'Online' : 'Offline';
-  document.getElementById('chatBody').innerHTML = t.messages.map(m => `
-    <div class="bubble ${m.from === 'me' ? 'me' : 'them'}">${m.text}<span class="time">${m.time}</span></div>`).join('');
-  const body = document.getElementById('chatBody');
-  body.scrollTop = body.scrollHeight;
+  const t = threadCache.find(x => x._id === id);
+  const auth = getAuth();
+  const other = t?.participants.find(p => p._id !== auth.user.id) || t?.participants[0];
+  document.getElementById('chatName').textContent = other?.name || 'Conversation';
+  document.getElementById('chatStatus').textContent = other?.role || '';
+
+  try {
+    const res = await fetch(`${API_BASE}/messages/threads/${id}`, { headers: authHeaders() });
+    const messages = await res.json();
+    document.getElementById('chatBody').innerHTML = messages.map(m => `
+      <div class="bubble ${m.sender === auth.user.id ? 'me' : 'them'}">${m.text || ''}<span class="time">${new Date(m.createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span></div>`).join('');
+    const body = document.getElementById('chatBody');
+    body.scrollTop = body.scrollHeight;
+  } catch (err) {
+    console.error(err);
+  }
 }
 
-function sendMessage(event){
+async function sendMessage(event){
   event.preventDefault();
   const input = document.getElementById('chatInput');
-  if(!input.value.trim()) return;
-  const t = THREADS.find(x => x.id === activeThreadId);
-  t.messages.push({ from:'me', text: input.value.trim(), time:'Just now' });
-  t.preview = input.value.trim();
-  input.value = '';
-  openThread(activeThreadId);
-  renderThreads();
+  if(!input.value.trim() || !activeThreadId) return;
+  try {
+    await fetch(`${API_BASE}/messages/threads/${activeThreadId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ text: input.value.trim() })
+    });
+    input.value = '';
+    openThread(activeThreadId);
+    renderThreads();
+  } catch (err) {
+    alert('Could not send message: ' + err.message);
+  }
 }
 
-function renderNotifications(){
+// ---------- Real notifications ----------
+async function renderNotifications(){
   const el = document.getElementById('notifList');
   if(!el) return;
-  el.innerHTML = NOTIFICATIONS.map(n => `
-    <div class="notif-row">
-      <div class="notif-dot ${n.read ? 'read' : ''}"></div>
-      <div><p>${n.text}</p><span>${n.time}</span></div>
-    </div>`).join('');
+  try {
+    const res = await fetch(`${API_BASE}/notifications`, { headers: authHeaders() });
+    const notifications = await res.json();
+    if(!res.ok) throw new Error(notifications.error || 'Could not load notifications');
+
+    if(notifications.length === 0){
+      el.innerHTML = `<p style="color:var(--ivory-faint);">No notifications yet.</p>`;
+      return;
+    }
+
+    el.innerHTML = notifications.map(n => `
+      <div class="notif-row">
+        <div class="notif-dot ${n.read ? 'read' : ''}"></div>
+        <div><p>${n.text}</p><span>${new Date(n.createdAt).toLocaleString()}</span></div>
+      </div>`).join('');
+  } catch (err) {
+    el.innerHTML = `<p style="color:var(--ivory-faint);">Could not load notifications: ${err.message}</p>`;
+  }
 }
 
 function initDashboard(){
   if(!document.getElementById('dashRoot')) return;
+
+  const auth = getAuth();
+  if(!auth){
+    alert('Please sign in to view your dashboard.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const welcome = document.getElementById('dashWelcome');
+  if(welcome) welcome.textContent = `Welcome back, ${auth.user.name.split(' ')[0]}.`;
+
   renderProjects();
   renderThreads();
-  openThread(activeThreadId);
   renderNotifications();
 }
 
-// ---------- Login page: now calls the real backend ----------
+function logout(){
+  clearAuth();
+  window.location.href = 'index.html';
+}
+
+// ---------- Login page ----------
 function setRole(role, el){
   document.querySelectorAll('.role-toggle button').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
@@ -310,8 +412,9 @@ async function handleLogin(event){
     });
     const data = await res.json();
     if(!res.ok) throw new Error(data.error || 'Login failed');
-    localStorage.removeItem('placeholder'); // no browser storage used for real data
-    alert(`Welcome back, ${data.user.name}! (Token received — dashboard wiring is a future step.)`);
+    setAuth(data.token, data.user);
+    alert(`Welcome back, ${data.user.name}!`);
+    window.location.href = 'dashboard.html';
   } catch (err) {
     alert('Login failed: ' + err.message);
   }
@@ -332,20 +435,35 @@ async function handleSignup(event){
     });
     const data = await res.json();
     if(!res.ok) throw new Error(data.error || 'Signup failed');
-    alert(`Account created for ${data.user.name}! You can now sign in.`);
+    setAuth(data.token, data.user);
+    alert(`Account created for ${data.user.name}!`);
+    window.location.href = 'dashboard.html';
   } catch (err) {
     alert('Signup failed: ' + err.message);
   }
 }
 
+// ---------- Nav: show Sign in vs Sign out depending on auth state ----------
+function updateNavAuthState(){
+  const auth = getAuth();
+  document.querySelectorAll('[data-auth-action]').forEach(el => {
+    if(auth){
+      el.textContent = 'Sign out';
+      el.href = '#';
+      el.onclick = (e) => { e.preventDefault(); logout(); };
+    }
+  });
+}
+
 // ---------- Init on load ----------
 document.addEventListener('DOMContentLoaded', async () => {
+  updateNavAuthState();
   initBrowse();
   initProfile();
   initDashboard();
   const featured = document.getElementById('featuredGrid');
   if(featured){
     const all = await fetchProfessionals();
-    renderCards('featuredGrid', all.filter(p => p.rating >= 4.5).slice(0,3).length ? all.filter(p => p.rating >= 0).slice(0,3) : all.slice(0,3));
+    renderCards('featuredGrid', all.slice(0,3));
   }
 });

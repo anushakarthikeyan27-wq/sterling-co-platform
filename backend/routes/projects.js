@@ -38,6 +38,7 @@ router.post('/', requireAuth, requireRole('client'), async (req, res) => {
 });
 
 // GET /api/projects/mine — projects for the logged-in user (client or professional)
+// Populates client name and professional name so the frontend can display them directly.
 router.get('/mine', requireAuth, async (req, res) => {
   let query;
   if (req.user.role === 'client') {
@@ -48,7 +49,10 @@ router.get('/mine', requireAuth, async (req, res) => {
   } else {
     return res.status(403).json({ error: 'Not applicable for this role' });
   }
-  const projects = await Project.find(query).sort({ createdAt: -1 });
+  const projects = await Project.find(query)
+    .populate('client', 'name')
+    .populate({ path: 'professional', populate: { path: 'user', select: 'name' } })
+    .sort({ createdAt: -1 });
   res.json(projects);
 });
 
