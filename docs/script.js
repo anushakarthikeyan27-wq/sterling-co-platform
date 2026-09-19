@@ -486,9 +486,22 @@ function updateNavAuthState(){
   });
 }
 
+// ---------- Storage notice banner (shown once, dismissible) ----------
+function initStorageNotice(){
+  if(localStorage.getItem('sterling_notice_dismissed')) return;
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#12160f;border-top:1px solid #3c4136;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;z-index:200;font-size:13px;color:#a29c8a;';
+  banner.innerHTML = `
+    <span>This site uses your browser's local storage to keep you signed in. No cookies or third-party tracking are used.</span>
+    <button style="background:#b8904f;color:#14180f;border:none;padding:8px 18px;font-size:13px;cursor:pointer;white-space:nowrap;" onclick="localStorage.setItem('sterling_notice_dismissed','1'); this.parentElement.remove();">Got it</button>
+  `;
+  document.body.appendChild(banner);
+}
+
 // ---------- Init on load ----------
 document.addEventListener('DOMContentLoaded', async () => {
   updateNavAuthState();
+  initStorageNotice();
   initBrowse();
   initProfile();
   initDashboard();
