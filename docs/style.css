@@ -187,7 +187,7 @@ hr.rule{border:none;border-top:1px solid var(--hairline);margin:0;}
 }
 .search-box{flex:1;min-width:220px;display:flex;border:1px solid var(--hairline-light);background:var(--bg-panel);}
 .search-box input{flex:1;background:transparent;border:none;color:var(--ivory);padding:11px 14px;font-size:14px;}
-.search-box input:focus{outline:none;}
+.search-box input:focus{outline:1px solid var(--brass);outline-offset:-1px;}
 .search-box button{background:var(--brass);color:#14180f;border:none;padding:0 18px;font-size:13px;}
 
 /* ---------- Forms ---------- */
@@ -305,7 +305,7 @@ hr.rule{border:none;border-top:1px solid var(--hairline);margin:0;}
 .bubble .time{display:block;font-size:10.5px;color:var(--ivory-faint);margin-top:6px;}
 .chat-input{border-top:1px solid var(--hairline);padding:16px;display:flex;gap:12px;}
 .chat-input input{flex:1;background:var(--bg-elevated);border:1px solid var(--hairline-light);color:var(--ivory);padding:12px 14px;}
-.chat-input input:focus{outline:none;border-color:var(--brass);}
+.chat-input input:focus{outline:1px solid var(--brass);outline-offset:-1px;border-color:var(--brass);}
 
 /* ---------- Notifications ---------- */
 .notif-row{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--hairline);}
